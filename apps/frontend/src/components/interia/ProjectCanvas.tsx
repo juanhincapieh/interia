@@ -3,6 +3,8 @@
 import Image from "next/image";
 
 import { CanvasLayout } from "@/components/interia/CanvasLayout";
+import { RoomGridOverlay } from "@/components/interia/RoomGridOverlay";
+import { SAMPLE_CANVAS_ROOM_STATE } from "@/lib/interia/sample-canvas-room-state";
 import { SAMPLES } from "@/lib/interia/samples";
 
 const PLACEHOLDER_PANELS = [
@@ -32,7 +34,7 @@ export function ProjectCanvas({ projectId }: { projectId: string }) {
             boxShadow: "0 18px 48px rgba(31,31,28,0.08)",
           }}
         >
-          <div className="relative aspect-[4/5] w-full">
+          <div className="relative aspect-4/5 w-full">
             <Image
               src={hero.heroUrl}
               alt="Room source preview"
@@ -42,25 +44,13 @@ export function ProjectCanvas({ projectId }: { projectId: string }) {
               priority
             />
             <div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(31,31,28,0.02) 0%, rgba(31,31,28,0.12) 100%)",
+                  "linear-gradient(180deg, rgba(31,31,28,0.02) 0%, rgba(31,31,28,0.06) 100%)",
               }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "var(--porcelain)",
-                  textShadow: "0 1px 8px rgba(31,31,28,0.45)",
-                }}
-              >
-                Grid overlay · Phase 4.2
-              </div>
-            </div>
+            />
+            <RoomGridOverlay state={SAMPLE_CANVAS_ROOM_STATE} />
           </div>
           <div
             className="border-t px-4 py-3"
