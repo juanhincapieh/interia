@@ -1,6 +1,8 @@
-"""Interia tool registry. Tools are added in Phase 3."""
+"""Interia tool registry."""
 from __future__ import annotations
+
+from .vision import analyze_room
 
 
 def all_tools() -> list:
-    return []
+    return [analyze_room]

@@ -1,0 +1,11 @@
+{
+  "roomType": "bedroom",
+  "cameraAngle": "corner-left",
+  "objects": [
+    { "type": "window", "label": "Tall single window", "bbox": {"x": 0.05, "y": 0.10, "w": 0.18, "h": 0.50}, "confidence": 0.93 },
+    { "type": "bed", "label": "Queen bed with linen bedding", "bbox": {"x": 0.30, "y": 0.40, "w": 0.45, "h": 0.50}, "confidence": 0.95 },
+    { "type": "desk", "label": "Wooden desk", "bbox": {"x": 0.78, "y": 0.45, "w": 0.18, "h": 0.30}, "confidence": 0.82 },
+    { "type": "chair", "label": "Cream upholstered chair", "bbox": {"x": 0.74, "y": 0.55, "w": 0.10, "h": 0.30}, "confidence": 0.78 },
+    { "type": "plant", "label": "Tall floor plant", "bbox": {"x": 0.66, "y": 0.30, "w": 0.10, "h": 0.45}, "confidence": 0.88 }
+  ]
+}

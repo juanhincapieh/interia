@@ -1,0 +1,10 @@
+{
+  "roomType": "studio",
+  "cameraAngle": "front",
+  "objects": [
+    { "type": "desk", "label": "Large work desk", "bbox": {"x": 0.20, "y": 0.45, "w": 0.60, "h": 0.30}, "confidence": 0.91 },
+    { "type": "chair", "label": "Ergonomic office chair", "bbox": {"x": 0.40, "y": 0.55, "w": 0.20, "h": 0.35}, "confidence": 0.87 },
+    { "type": "lamp", "label": "Desk lamp", "bbox": {"x": 0.65, "y": 0.40, "w": 0.10, "h": 0.20}, "confidence": 0.84 },
+    { "type": "plant", "label": "Small succulent", "bbox": {"x": 0.75, "y": 0.42, "w": 0.08, "h": 0.12}, "confidence": 0.79 }
+  ]
+}

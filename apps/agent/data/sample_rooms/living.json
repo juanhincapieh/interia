@@ -1,0 +1,10 @@
+{
+  "roomType": "living",
+  "cameraAngle": "corner-right",
+  "objects": [
+    { "type": "window", "label": "Wide panoramic window", "bbox": {"x": 0.55, "y": 0.10, "w": 0.40, "h": 0.55}, "confidence": 0.94 },
+    { "type": "decor", "label": "Sectional sofa", "bbox": {"x": 0.05, "y": 0.50, "w": 0.55, "h": 0.40}, "confidence": 0.92 },
+    { "type": "rug", "label": "Neutral area rug", "bbox": {"x": 0.05, "y": 0.70, "w": 0.50, "h": 0.25}, "confidence": 0.88 },
+    { "type": "plant", "label": "Fiddle leaf fig", "bbox": {"x": 0.50, "y": 0.25, "w": 0.12, "h": 0.50}, "confidence": 0.81 }
+  ]
+}
