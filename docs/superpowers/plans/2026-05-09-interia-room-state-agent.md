@@ -2990,26 +2990,13 @@ In `apps/frontend/src/app/project/[id]/page.tsx`, call `useInteriaFrontendTools(
 ### Task 5.1: Auto-start the agent loop on canvas mount
 
 **Files:**
-- Modify: `apps/frontend/src/app/project/[id]/page.tsx`
+- Implemented in: `apps/frontend/src/lib/interia/use-interia-project.tsx` (used by `InteriaProjectShell` → `ProjectPageClient` → `apps/frontend/src/app/project/[id]/page.tsx`)
 
-- [ ] **Step 1: On mount, read the `interia:<id>` session key, send the initial message to the agent**
+- [x] **Step 1: On mount, read the `interia:<id>` session key, send the initial message to the agent**
 
-```tsx
-useEffect(() => {
-  const seed = sessionStorage.getItem(`interia:${id}`);
-  if (!seed) return;
-  const { sampleId, uploadedUrl } = JSON.parse(seed);
-  // CopilotKit message dispatch — adapt to current API
-  appendMessage({
-    role: "user",
-    content: sampleId
-      ? `Start a new project for the ${sampleId} sample room.`
-      : `Start a new project for the uploaded image at ${uploadedUrl}.`,
-  });
-}, [id]);
-```
+CopilotKit v2: after parsing the seed JSON successfully, set `interia-sent:${projectId}` so bootstrap runs once per tab; call `agent.addMessage` then `copilotkit.runAgent({ agent })`.
 
-- [ ] **Step 2: Manual e2e test (mock mode)**
+- [x] **Step 2: Manual e2e test (mock mode)**
 
 ```bash
 INTERIA_MOCK=1 npm run dev
@@ -3017,21 +3004,21 @@ INTERIA_MOCK=1 npm run dev
 
 Click bedroom sample on the upload view → routes to `/project/<id>` → agent runs `analyze_room`, `build_room_state`, `generate_grid` → grid overlay paints with the canned objects → ConfirmationCard appears.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ---
 
 ### Task 5.2: Real Gemini path smoke test
 
-- [ ] **Step 1: With a real `GEMINI_API_KEY`, run `npm run dev` (no `INTERIA_MOCK`)**
+- [ ] **Step 1: With a real `GEMINI_API_KEY`, run `npm run dev` (no `INTERIA_MOCK`)** — developer machine only
 - [ ] **Step 2: Click bedroom sample, watch network for Gemini calls**
 - [ ] **Step 3: Confirm `analyze_room` returns a real analysis**
 - [ ] **Step 4: Click "Generate preview" → watch Gemini image call → preview renders → fidelity report renders**
-- [ ] **Step 5: Note any latency issues; if `analyze_room` is slow, increase the cache**
+- [ ] **Step 5: Note any latency issues; if `analyze_room` is slow, tune caching in `apps/agent/src/interia/tools/vision.py`**
 
-If the API rate-limits or 5xxs, fall back to `INTERIA_MOCK=1`. Document the failure mode in `dev-docs/interia.md`.
+If the API rate-limits or 5xxs, fall back to `INTERIA_MOCK=1`. Failure modes and checklist: [dev-docs/interia.md](../../../dev-docs/interia.md).
 
-- [ ] **Step 6: Commit any tweaks**
+- [x] **Step 6: Commit any tweaks** — baseline doc in `dev-docs/interia.md`; commit again after any Gemini-specific tuning
 
 ---
 

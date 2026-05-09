@@ -2,9 +2,7 @@
 
 ## Bootstrap from upload → project canvas
 
-1. The upload view (`apps/frontend/src/app/page.tsx`) writes  
-   `sessionStorage[`interia:${projectId}`]`  
-   as `{ sampleId }` or `{ uploadedUrl }`.
+1. The upload view (`apps/frontend/src/app/page.tsx`) writes JSON under the session key `interia:<projectId>` with `{ sampleId }` or `{ uploadedUrl }`.
 2. On `/project/[id]`, `useInteriaProject` (`apps/frontend/src/lib/interia/use-interia-project.tsx`) reads that key once per tab (guarded by `interia-sent:${projectId}`), pushes a user message with CopilotKit v2 (`agent.addMessage` + `copilotkit.runAgent`), and starts the agent loop.
 
 ## Mock mode (`INTERIA_MOCK=1`)

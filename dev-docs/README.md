@@ -16,6 +16,7 @@ Deeper guides for the kit. Start with the root [README](../README.md) for the pr
 - [Available scripts](scripts.md) — `npm run` cheat sheet
 - [Demo prompts](demo-prompts.md) — try each layer
 - [Troubleshooting](troubleshooting.md) — known failure modes + fixes
+- [Interia demo](interia.md) — upload bootstrap, mock vs Gemini, smoke checklist
 
 ## External docs
 
