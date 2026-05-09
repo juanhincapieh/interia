@@ -76,7 +76,7 @@ class LockSet(BaseModel):
     appearance: LockLevel = "editable"
 
 
-EditContract = dict  # alias only; runtime type is dict[str, LockSet]
+EditContract = Dict[str, LockSet]
 
 
 # --- shell, source, preferences -----------------------------------------
