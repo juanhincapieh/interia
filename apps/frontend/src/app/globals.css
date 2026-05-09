@@ -33,6 +33,31 @@
   --sidebar-accent-foreground: #010507;
   --sidebar-border: #DBDBE5;
   --sidebar-ring: rgba(190, 194, 255, 0.6);
+
+  /* Interia Japandi tokens */
+  --warm-canvas: #F7F3EC;
+  --soft-cream: #FBF8F2;
+  --porcelain: #FFFFFF;
+  --sand-border: #E7DED1;
+  --sand-border-strong: #DAD0C0;
+  --charcoal: #1F1F1C;
+  --warm-gray: #6F6A61;
+  --dust-gray: #9A9489;
+  --sage: #5F7F63;
+  --deep-sage: #49634D;
+  --mist-sage: #E7EFE4;
+  --terracotta: #C97855;
+  --clay: #E9C7B3;
+  --muted-gold: #C9A96A;
+
+  /* radii */
+  --r-pill: 999px;
+  --r-card-sm: 12px;
+  --r-card: 14px;
+  --r-card-lg: 18px;
+  --r-card-xl: 22px;
+  --r-card-2xl: 24px;
+  --r-frame: 30px;
 }
 
 @theme inline {
@@ -81,6 +106,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans), system-ui, sans-serif;
+    background-color: var(--warm-canvas);
+    color: var(--charcoal);
   }
   code,
   kbd,
@@ -223,5 +250,27 @@ html {
 
 [data-just-synced="true"] {
   animation: lead-card-just-synced 800ms ease-out 1;
+}
+
+/*
+  ─────────────────────────────────────────────────────────────────────
+  Interia Japandi design overlay
+  ─────────────────────────────────────────────────────────────────────
+  Subtle radial gradients for terracotta and sage accents in the background.
+*/
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(201, 120, 85, 0.05), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(95, 127, 99, 0.05), transparent 40%);
+  z-index: -1;
+}
+
+@keyframes interiaTyping {
+  0%, 60%, 100% { opacity: 0.3; }
+  30% { opacity: 1; }
 }
 
