@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Sidebar } from "@/components/interia/Sidebar";
@@ -16,6 +16,10 @@ import { SAMPLES, DEFAULT_SAMPLE_ID, type SampleId } from "@/lib/interia/samples
 export default function UploadPage() {
   const router = useRouter();
   const [selectedSampleId, setSelectedSampleId] = useState<SampleId | null>(DEFAULT_SAMPLE_ID);
+  const objectUrlRef = useRef<string | null>(null);
+
+  // Revoke any outstanding object URL on unmount
+  useEffect(() => () => { if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current); }, []);
 
   const heroSample = SAMPLES.find((s) => s.id === selectedSampleId) ?? SAMPLES[0];
 
@@ -24,7 +28,9 @@ export default function UploadPage() {
     if ("sampleId" in payload) {
       sessionStorage.setItem(`interia:${id}`, JSON.stringify({ sampleId: payload.sampleId }));
     } else {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
       const url = URL.createObjectURL(payload.file);
+      objectUrlRef.current = url;
       sessionStorage.setItem(`interia:${id}`, JSON.stringify({ uploadedUrl: url }));
     }
     router.push(`/project/${id}`);
