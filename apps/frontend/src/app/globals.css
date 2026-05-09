@@ -36,7 +36,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,7 +80,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-jakarta), system-ui, sans-serif;
+    font-family: var(--font-sans), system-ui, sans-serif;
   }
   code,
   kbd,

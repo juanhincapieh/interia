@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Plus_Jakarta_Sans, Spline_Sans_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { CopilotKitProviderShell } from "@/components/copilot/CopilotKitProviderShell";
 import "./globals.css";
 // v2 owns its own stylesheet. Do NOT import @copilotkit/react-ui/styles.css —
@@ -9,22 +9,23 @@ import "./globals.css";
 // and break the sidebar layout when both are loaded.
 import "@copilotkit/react-core/v2/styles.css";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-jakarta",
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
-const splineMono = Spline_Sans_Mono({
+const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-mono",
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "AG-UI Canvas | CopilotKit Hackathon Starter",
-  description:
-    "Hackathon starter kit: CopilotKit canvas + threads drawer + Deep Agents + Gemini + Notion MCP",
+  title: "Interia — Interactive Interior AI",
+  description: "Upload a photo of your room and let Interia turn it into an editable design state.",
 };
 
 export default function RootLayout({
@@ -33,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${splineMono.variable}`}>
-      <body className={`${jakarta.variable} ${splineMono.variable} subpixel-antialiased`}>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+      <body className={`${inter.variable} ${jetbrains.variable} subpixel-antialiased`}>
         <CopilotKitProviderShell>{children}</CopilotKitProviderShell>
       </body>
     </html>
