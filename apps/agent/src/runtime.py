@@ -1,12 +1,12 @@
-"""Switchable runtime factory for the lead-triage agent.
+"""Switchable runtime factory for the Interia Room State Agent.
 
 Selects one of three configurations based on `AGENT_RUNTIME` so we can
 side-by-side benchmark Gemini-Flash-Lite-deepagents vs. Gemini-Flash-Lite-react
 vs. Claude-Sonnet-4.6-react without a code edit.
 
 Every runtime keeps the same middleware chain — `TimingMiddleware` first
-(outermost) so it sees every inner model/tool call, then `LeadStateMiddleware`
-to contribute the canvas-state TypedDict, and `CopilotKitMiddleware` for
+(outermost) so it sees every inner model/tool call, then `RoomStateMiddleware`
+to contribute the Room State key, and `CopilotKitMiddleware` for
 AG-UI / CopilotKit interop.
 
 Anthropic deps are imported lazily so a missing `ANTHROPIC_API_KEY` only
@@ -22,7 +22,7 @@ from langgraph.graph.state import CompiledStateGraph
 
 from copilotkit import CopilotKitMiddleware
 
-from .lead_state import LeadStateMiddleware
+from .interia.middleware import RoomStateMiddleware
 from .timing import TimingMiddleware
 
 
@@ -63,7 +63,7 @@ def build_graph(
         runtime: One of `gemini-flash-deep`, `gemini-flash-react`,
             `claude-sonnet-4-6-react`. Anything else falls back to
             `gemini-flash-deep` with a warning.
-        tools: Notion-MCP-backed + local backend tools to bind. Frontend
+        tools: Backend tools to bind. Frontend
             tools are forwarded by `CopilotKitMiddleware` at run time and
             must NOT appear here (Gemini rejects duplicate function
             declarations).
@@ -79,9 +79,9 @@ def build_graph(
         runtime = "gemini-flash-deep"
 
     timing = TimingMiddleware()
-    lead_state = LeadStateMiddleware()
+    room_state = RoomStateMiddleware()
     copilotkit = CopilotKitMiddleware()
-    middleware = [timing, lead_state, copilotkit]
+    middleware = [timing, room_state, copilotkit]
 
     if runtime == "noop":
         return _build_noop(NOOP_FALLBACK_MESSAGE)
