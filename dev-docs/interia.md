@@ -2,12 +2,14 @@
 
 ## Bootstrap from upload → project canvas
 
-1. The upload view (`apps/frontend/src/app/page.tsx`) writes JSON under the session key `interia:<projectId>` with `{ sampleId }` or `{ uploadedUrl }`.
+1. The upload view (`apps/frontend/src/app/page.tsx`) writes JSON under the session key `interia:<projectId>` with `{ sampleId }` or `{ imageUrl }` (server path under `/uploads/interia/…` after `POST /api/interia/upload`).
 2. On `/project/[id]`, `useInteriaProject` (`apps/frontend/src/lib/interia/use-interia-project.tsx`) reads that key once per tab (guarded by `interia-sent:${projectId}`), pushes a user message with CopilotKit v2 (`agent.addMessage` + `copilotkit.runAgent`), and starts the agent loop.
 
 ## Mock mode (`INTERIA_MOCK=1`)
 
-Tools in `apps/agent` short-circuit to canned data when `INTERIA_MOCK=1` is set for the **agent process**. From the repo root:
+Tools in `apps/agent` short-circuit to canned data when `INTERIA_MOCK=1` is set for the **agent process**. **Uploads in mock mode still run canned vision** (defaults to the bedroom sample JSON when `sample_id` is absent), so every custom photo looks the same until you turn mock off.
+
+From the repo root:
 
 ```bash
 INTERIA_MOCK=1 npm run dev
@@ -19,7 +21,7 @@ The variable is forwarded to every child of `concurrently`, including `langgraph
 
 ## Real Gemini path
 
-Unset `INTERIA_MOCK` (or set it to anything other than `1`). Ensure `GEMINI_API_KEY` is configured per [Setup](setup.md).
+Set `INTERIA_MOCK=0` (or unset it) in **`apps/agent/.env`** — `langgraph dev` loads that file, not only the repo root `.env`. Set a real `GEMINI_API_KEY` there (see [Setup](setup.md)). Set `INTERIA_PUBLIC_IMAGE_BASE` to your Next.js origin (e.g. `http://127.0.0.1:3000`) so the agent can fetch `/samples/…` and `/uploads/…` for multimodal calls.
 
 **Smoke checklist**
 

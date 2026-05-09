@@ -9,16 +9,26 @@ from uuid import uuid4
 from langchain_core.tools import tool
 
 from ..schemas import Preview, RoomState
+from .image_resolve import resolve_image_for_gemini
 
 
 _MOCK_DIR = Path(__file__).resolve().parents[4] / "data" / "mock_previews"
+
+
+def _identity_locked(rs: RoomState, oid: str) -> bool:
+    lock = rs.editContract.get(oid)
+    if lock is None:
+        return False
+    if hasattr(lock, "identity"):
+        return lock.identity == "locked"
+    return lock.get("identity") == "locked"
 
 
 def _build_prompt(rs: RoomState) -> str:
     locked = [
         f"- {o.label} ({o.type}, grid {o.gridPosition.root}): identity+position+appearance LOCKED"
         for o in rs.objects
-        if rs.editContract.get(o.id, {}).get("identity") == "locked"
+        if _identity_locked(rs, o.id)
     ]
     style = rs.preferences.style if rs.preferences else "warm-modern"
     return (
@@ -55,9 +65,10 @@ def generate_preview(state: dict) -> dict:
         model="gemini-3-image-preview",
         api_key=os.environ["GEMINI_API_KEY"],
     )
+    resolved = resolve_image_for_gemini(rs.source.imageUrl)
     msg = HumanMessage(content=[
         {"type": "text", "text": prompt},
-        {"type": "image_url", "image_url": rs.source.imageUrl},
+        {"type": "image_url", "image_url": resolved},
     ])
     response = llm.invoke([msg])
     image_url = _extract_image_url(response)

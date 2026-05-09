@@ -20,7 +20,7 @@
     "dev:mcp": "npm run dev --workspace mcp",
     "install:agent": "cd apps/agent && uv sync",
     "install:mcp": "npm install --workspace mcp",
-    "postinstall": "npm run install:agent",
+    "postinstall": "patch-package && npm run install:agent",
     "license": "npx copilotkit license -n hackathon-kit",
     "build": "npm run build --workspace frontend",
     "start": "npm run start --workspace frontend",
@@ -28,6 +28,7 @@
     "codegen": "node scripts/codegen-types.mjs"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "patch-package": "^8.0.0"
   }
 }

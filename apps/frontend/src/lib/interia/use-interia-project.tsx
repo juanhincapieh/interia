@@ -74,16 +74,36 @@ export function useInteriaProject(projectId: string) {
     if (sessionStorage.getItem(sentKey)) return;
     const raw = sessionStorage.getItem(`interia:${projectId}`);
     if (!raw) return;
-    let seed: { sampleId?: string; uploadedUrl?: string };
+    let seed: { sampleId?: string; imageUrl?: string; uploadedUrl?: string };
     try {
-      seed = JSON.parse(raw) as { sampleId?: string; uploadedUrl?: string };
+      seed = JSON.parse(raw) as { sampleId?: string; imageUrl?: string; uploadedUrl?: string };
     } catch {
       return;
     }
     sessionStorage.setItem(sentKey, "1");
-    const msg = seed.sampleId
-      ? `Start a new project for the ${seed.sampleId} sample room.`
-      : `Start a new project for the uploaded image at ${seed.uploadedUrl}.`;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    let msg: string;
+    if (seed.sampleId) {
+      const imageUrl = `${origin}/samples/${seed.sampleId}.jpg`;
+      msg =
+        `Start a new room remix project.\n` +
+        `Source photo URL (use exactly as remix_room_from_photo.image_url): ${imageUrl}\n` +
+        `Call remix_room_from_photo with image_url="${imageUrl}" and sample_id="${seed.sampleId}". ` +
+        `Then call setRoomState with the returned roomState. Summarize the design suggestion and fidelity for the user.`;
+    } else if (seed.imageUrl) {
+      const imageUrl = `${origin}${seed.imageUrl}`;
+      msg =
+        `Start a new room remix project.\n` +
+        `Source photo URL (use exactly as remix_room_from_photo.image_url): ${imageUrl}\n` +
+        `Call remix_room_from_photo with image_url="${imageUrl}" and sample_id null. ` +
+        `Then call setRoomState with the returned roomState. Summarize the design suggestion and fidelity for the user.`;
+    } else if (seed.uploadedUrl) {
+      msg =
+        "Start a new room remix project. The session only has a browser blob URL for the upload, which the agent cannot load. " +
+        "Ask the user to return to the home page and upload the photo again (it will be stored on the server), or pick a sample room.";
+    } else {
+      return;
+    }
     agent.addMessage({ id: crypto.randomUUID(), role: "user", content: msg });
     void copilotkit.runAgent({ agent }).catch((e: unknown) => console.error("bootstrap runAgent", e));
   }, [agent, copilotkit, projectId]);

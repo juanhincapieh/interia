@@ -6,6 +6,7 @@ import os
 from langchain_core.tools import tool
 
 from ..schemas import FidelityReport, RoomState
+from .image_resolve import resolve_image_for_gemini
 
 
 @tool
@@ -34,10 +35,12 @@ def validate_fidelity(state: dict, preview: dict) -> dict:
         api_key=os.environ["GEMINI_API_KEY"],
     )
     structured = llm.with_structured_output(FidelityReport)
+    orig = resolve_image_for_gemini(rs.source.imageUrl)
+    prev_img = resolve_image_for_gemini(preview["imageUrl"])
     msg = HumanMessage(content=[
         {"type": "text", "text": prompt},
-        {"type": "image_url", "image_url": rs.source.imageUrl},
-        {"type": "image_url", "image_url": preview["imageUrl"]},
+        {"type": "image_url", "image_url": orig},
+        {"type": "image_url", "image_url": prev_img},
     ])
     return structured.invoke([msg]).model_copy(update={"previewId": preview["id"]}).model_dump(mode="json")
 

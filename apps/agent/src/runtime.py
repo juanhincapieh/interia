@@ -160,6 +160,30 @@ def _gemini_llm():
     )
 
 
+_GOOGLE_GENAI_DEEPAGENT_HARNESS_REGISTERED = False
+
+
+def _register_google_genai_deepagent_harness() -> None:
+    """Avoid empty `contents` on Gemini when deepagents summarization trims history.
+
+    Deep Agents installs summarization middleware that can reduce the message
+    list to nothing for ``ChatGoogleGenerativeAI``, which then raises
+    ``ValueError: contents are required`` inside ``google.genai``. Excluding
+    summarization for the ``google_genai`` harness (see ``ls_provider`` on the
+    model) fixes the crash; long threads use more tokens instead.
+    """
+    global _GOOGLE_GENAI_DEEPAGENT_HARNESS_REGISTERED
+    if _GOOGLE_GENAI_DEEPAGENT_HARNESS_REGISTERED:
+        return
+    from deepagents.profiles import HarnessProfile, register_harness_profile
+
+    register_harness_profile(
+        "google_genai",
+        HarnessProfile(excluded_middleware=frozenset({"SummarizationMiddleware"})),
+    )
+    _GOOGLE_GENAI_DEEPAGENT_HARNESS_REGISTERED = True
+
+
 def _build_gemini_deep(
     tools: list, system_prompt: str, middleware: list
 ) -> CompiledStateGraph:
@@ -176,6 +200,7 @@ def _build_gemini_deep(
     """
     from deepagents import create_deep_agent
 
+    _register_google_genai_deepagent_harness()
     llm = _gemini_llm()
     return create_deep_agent(
         model=llm,

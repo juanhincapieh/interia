@@ -14,8 +14,9 @@ const intelligence = new CopilotKitIntelligence({
 });
 
 const agent = new LangGraphAgent({
+  // Must match `npm run dev:agent` (root package.json: langgraph dev --port 8133).
   deploymentUrl:
-    process.env.LANGGRAPH_DEPLOYMENT_URL ?? "http://localhost:8123",
+    process.env.LANGGRAPH_DEPLOYMENT_URL ?? "http://localhost:8133",
   graphId: "default",
   langsmithApiKey: process.env.LANGSMITH_API_KEY ?? "",
   // 60 (vs LangGraph default 25) leaves headroom for the deepagents planner
@@ -38,7 +39,8 @@ const app = createCopilotEndpoint({
       servers: [
         {
           type: "http",
-          url: process.env.MCP_SERVER_URL || "http://localhost:3001/mcp",
+          // Must match `npm run dev:mcp` (apps/mcp: mcp-use on port 3011).
+          url: process.env.MCP_SERVER_URL || "http://localhost:3011/mcp",
           serverId: "manufact_local",
         },
       ],
@@ -75,6 +77,37 @@ app.use("*", async (c, next) => {
     };
     c.res = new Response(JSON.stringify(remapped), {
       status: 500,
+      headers: { "content-type": "application/json" },
+    });
+    return;
+  }
+
+  // Intelligence run wraps getOrCreateThread failures as opaque 502 JSON (no
+  // upstream detail). Same root causes as FK — seed, org mismatch, unreachable
+  // app-api, or license — so surface a hint the UI can toast.
+  let parsed: { error?: unknown; hint?: unknown };
+  try {
+    parsed = JSON.parse(body) as { error?: unknown; hint?: unknown };
+  } catch {
+    parsed = {};
+  }
+  const isOpaqueThreadInit =
+    (status === 502 || status === 500) &&
+    parsed.error === "Failed to initialize thread" &&
+    parsed.hint === undefined;
+  if (isOpaqueThreadInit) {
+    const remapped = {
+      error: "Failed to initialize thread",
+      hint:
+        "Intelligence could not load or create the thread. Run `npm run seed` " +
+        "(users must match DEFAULT_ORGANIZATION_ID in docker-compose). " +
+        "Confirm `docker compose ps` shows intelligence healthy and " +
+        "`INTELLIGENCE_API_URL` matches `APP_API_HOST_PORT`. Check the BFF " +
+        'terminal for "Intelligence platform request failed" with the real status/body.',
+      command: "npm run seed",
+    };
+    c.res = new Response(JSON.stringify(remapped), {
+      status: 502,
       headers: { "content-type": "application/json" },
     });
     return;

@@ -3,10 +3,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from langchain.agents.middleware.types import AgentMiddleware
 from langgraph.types import Command
 
 
-class RoomStateMiddleware:
+class RoomStateMiddleware(AgentMiddleware):
     def state_schema_extras(self) -> dict[str, Any]:
         return {"roomState": dict}
 

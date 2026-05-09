@@ -8,6 +8,8 @@ from typing import Any, Optional
 
 from langchain_core.tools import tool
 
+from .image_resolve import resolve_image_for_gemini
+
 _DATA_DIR = Path(__file__).resolve().parents[3] / "data" / "sample_rooms"
 
 
@@ -38,6 +40,7 @@ def analyze_room(image_url: str, sample_id: Optional[str] = None) -> dict[str, A
         temperature=0,
         api_key=os.environ["GEMINI_API_KEY"],
     )
+    resolved = resolve_image_for_gemini(image_url)
     msg = HumanMessage(
         content=[
             {"type": "text", "text": (
@@ -47,7 +50,7 @@ def analyze_room(image_url: str, sample_id: Optional[str] = None) -> dict[str, A
                 "objects: array of {type, label, bbox:{x,y,w,h normalized 0..1}, confidence 0..1}. "
                 "Only emit objects you are >0.6 confident about."
             )},
-            {"type": "image_url", "image_url": image_url},
+            {"type": "image_url", "image_url": resolved},
         ]
     )
     raw = llm.invoke([msg]).content
