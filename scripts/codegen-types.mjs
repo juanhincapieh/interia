@@ -13,11 +13,17 @@ const repoRoot = process.cwd();
 const agentDir = join(repoRoot, "apps", "agent");
 const out = join(repoRoot, "apps", "frontend", "src", "lib", "interia", "types.ts");
 
-const json = execFileSync(
-  "uv",
-  ["run", "python", "-m", "src.interia.export_schema"],
-  { cwd: agentDir }
-).toString();
+let json;
+try {
+  json = execFileSync(
+    "uv",
+    ["run", "python", "-m", "src.interia.export_schema"],
+    { cwd: agentDir }
+  ).toString();
+} catch (err) {
+  console.error("codegen failed: could not run export_schema.py\n", err.message);
+  process.exit(1);
+}
 
 const schemas = JSON.parse(json);
 
