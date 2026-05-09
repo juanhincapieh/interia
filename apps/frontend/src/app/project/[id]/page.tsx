@@ -1,6 +1,6 @@
-import { ProjectCanvas } from "@/components/interia/ProjectCanvas";
+import { ProjectPageClient } from "./ProjectPageClient";
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <ProjectCanvas projectId={id} />;
+  return <ProjectPageClient projectId={id} />;
 }
