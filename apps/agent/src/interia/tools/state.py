@@ -10,6 +10,7 @@ from ..reducer import apply_patch
 from ..schemas import (
     DesignPatch,
     Grid,
+    GridCell,
     LockSet,
     RoomObject,
     RoomShell,
@@ -97,7 +98,7 @@ def generate_grid(state: dict) -> dict:
             new_objects.append(o)
             continue
         bbox_d = o.bbox.model_dump()
-        new_objects.append(o.model_copy(update={"gridPosition": _grid_cell(bbox_d)}))
+        new_objects.append(o.model_copy(update={"gridPosition": GridCell(_grid_cell(bbox_d))}))
     return rs.model_copy(update={"objects": new_objects}).model_dump(mode="json")
 
 
